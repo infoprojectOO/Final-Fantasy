@@ -5,6 +5,8 @@ import gui.Observer;
 
 import java.util.HashMap;
 
+import area.BattleField;
+
 import scenario.History;
 
 import character.Player;
@@ -18,17 +20,17 @@ public class World {
 		this.explorer = new Player();
 		this.map = new HashMap<String,PlayBoard>();
 		for (String s : History.PLACE_SERIES) {
-			this.map.put(s,new PlayBoard(20,20, explorer));
-		}
+			this.map.put(s,new PlayBoard(20,20,this.explorer));
+		} generate(this.map.get(History.currentPlace()));
+	}
+
+	private void generate(PlayBoard playboard) {
+		playboard.put(new Building(),10,5);
+		playboard.put(new BattleField(), 2, 15);
 	}
 
 	public Player getPlayer() {
 		return this.explorer;
-	}
-
-	public void movePlayer(int x, int y) {
-		this.explorer.setPosition(x,y);
-		this.display.update();
 	}
 
 	public void addObserver(Observer o) {

@@ -10,9 +10,11 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
-import control.PlayerController;
+import control.ActionController;
 
 import scenario.History;
+import settings.ActionsMap;
+import settings.KeyMap;
 
 import character.Player;
 
@@ -25,7 +27,8 @@ public class GameDisplay implements Observer {
 	private PlayBoard boardmodel;
 	private BoardDisplay board;
 	private JFrame gameframe;
-	private PlayerController playcontrol;
+	private ActionController playcontrol;
+	private ActionMap actmap; 
 	
 	public GameDisplay(int width, int height, World world, JFrame gameframe) {
 		super();
@@ -33,7 +36,7 @@ public class GameDisplay implements Observer {
 		this.height = height;
 		this.worldmodel = world;
 		this.gameframe = gameframe;
-		this.playcontrol = new PlayerController(this.worldmodel);
+		this.playcontrol = new ActionController(this.worldmodel);
 		BoardDisplay.width = width;
 		BoardDisplay.height = height;
 		this.player = this.worldmodel.getPlayer();
@@ -42,13 +45,16 @@ public class GameDisplay implements Observer {
 		this.gameframe.getContentPane().add(this.board);
 		set(this.board);
 		this.boardmodel.addObserver(board);
+		this.player.addObserver(board);
 		this.gameframe.pack();
 	}
 
 	private void set(BoardDisplay board) {
 		board.setFocusable(true);
 		board.requestFocusInWindow();
-		//board.addKeyListener(playcontrol);		
+		board.setInputMap(JComponent.WHEN_FOCUSED, new KeyMap());
+		board.setActionMap(new ActionsMap(this.playcontrol));	
+		board.addObserver(this.playcontrol);
 	}
 
 	@Override

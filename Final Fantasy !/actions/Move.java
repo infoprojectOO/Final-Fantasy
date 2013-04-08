@@ -5,17 +5,23 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 
+import control.ActionController;
+
 import world.PlayBoard;
 
 public class Move extends AbstractAction {
 	private int dx,dy;
+	private String id;
 	private PlayBoard actionground;
+	private ActionController actioncenter;
 	
-	public Move(int dx, int dy, PlayBoard actionground) {
+	public Move(String id,int dx, int dy, ActionController playcontrol) {
 		super();
+		this.id = id;
 		this.dx = dx;
 		this.dy = dy;
-		this.actionground = actionground;
+		this.actioncenter = playcontrol;
+		this.actionground = playcontrol.getBoard();
 		
 	}
 
@@ -29,8 +35,9 @@ public class Move extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		System.out.println("here");
-		this.actionground.movePlayer(dx,dy);
+		if (this.actionground.hasWay(this.id)){
+			this.actioncenter.shift(dx, dy);
+		}
 	}
 
 }

@@ -1,5 +1,7 @@
 package world;
 
-public interface IMapComponent {
+import java.awt.Image;
 
+public interface IMapComponent {
+	Image getLook();
 }

@@ -2,36 +2,47 @@ package character;
 
 import gui.Observer;
 
+import item.IItem;
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
-public class Player {
+import add_on.GraphImage;
+
+import world.IMapComponent;
+
+public class Player implements IMapComponent {
 	private BufferedImage appearance;
 	private int posX;
 	private int posY;
-	private List<Integer> position;
+	private Map<String,IItem> inventory;
 	private Observer display;
 
 	public Player() {
-		try {
-			   URL url = Player.class.getResource("Cloud_Strife_Nomura_art.jpg");
-			   this.appearance = ImageIO.read(url);
-		} catch (IOException e) {System.out.println("No image found");}
-		setPosition(50,50);
+		this.inventory = new HashMap<String,IItem>();
+		this.appearance = GraphImage.getImage("Cloud_Strife_Nomura_art.jpg", this);
+		
 	}
 
 	public void setPosition(int x, int y) {
 		this.posX = x;
 		this.posY = y;
 	}
+	
+	public void addObserver(Observer o) {
+		this.display = o;
+	}
+	
+	public void move(int dx, int dy) {
+		setPosition(this.posX + dx,this.posY + dy);
+		this.display.update();
+	}
 
-	public Image getAppearance() {
+	public Image getLook() {
 		return this.appearance;
 	}
 
@@ -42,5 +53,5 @@ public class Player {
 	public int getPosY() {
 		return posY;
 	}
-
+	
 }

@@ -1,15 +1,15 @@
-package world;
+package area;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import add_on.GraphImage;
 
-public class Building implements IMapComponent {
+public class BattleField implements IArea {
 	private BufferedImage look;
 	
-	public Building() {
-		this.look = GraphImage.getImage("building.jpg", this);
+	public BattleField() {
+		this.look = GraphImage.getImage("fire.jpg", this);
 	}
 
 	@Override

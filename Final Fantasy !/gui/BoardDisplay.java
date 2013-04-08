@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
+import control.ActionController;
+
 import actions.Move;
 
 import settings.ActionsMap;
@@ -15,6 +17,7 @@ import settings.KeyMap;
 
 import character.Player;
 
+import world.IMapComponent;
 import world.PlayBoard;
 
 public class BoardDisplay extends JPanel implements Observer {
@@ -23,28 +26,40 @@ public class BoardDisplay extends JPanel implements Observer {
 	private int ScaleY; //1 block = y coordinates
 	private Player player;
 	private PlayBoard gameboard;
+	private Observer controller;
 
 	public BoardDisplay(PlayBoard board, Player player) {
 		super();
-		System.out.println(width);
-		System.out.println(height);
 		this.player = player;
 		this.gameboard = board;
 		this.ScaleX = BoardDisplay.width/this.gameboard.getWidth();
 		this.ScaleY = BoardDisplay.height/this.gameboard.getHeigth();
-		this.setInputMap(JComponent.WHEN_FOCUSED, new KeyMap());
-		this.setActionMap(new ActionsMap(this.gameboard));
-		
+	}
+
+	public int getScaleX() {
+		return ScaleX;
+	}
+
+	public int getScaleY() {
+		return ScaleY;
 	}
 
 	public void paint(Graphics g) {
-		draw(g);
-		//g.drawImage(worldmodel.getPlayer().getAppearance(), 50,50,100,100,0,0,1000,1000,null);
-	}
-	
-	private void draw(Graphics g) {
-		g.drawImage(this.player.getAppearance(), player.getPosX(), player.getPosY() , ScaleX, ScaleY, null);
+		g.drawImage(this.gameboard.getBackground(), 0, 0, width, height,null);
+		drawComponents(g);
+		g.drawImage(this.player.getLook(), player.getPosX(), player.getPosY() , ScaleX, ScaleY, null);
 		
+	}
+
+	private void drawComponents(Graphics g) {
+		for (int w=0;w<this.gameboard.getWidth();w++) {
+			for (int h=0;h<this.gameboard.getHeigth();h++) {
+				if (!this.gameboard.isEmpty(w, h)) {
+					IMapComponent mc = this.gameboard.get(w, h);
+					g.drawImage(mc.getLook(), w*ScaleX, h*ScaleY, ScaleX, ScaleY, null);
+				}
+			}
+		}
 	}
 
 	public Dimension getPreferredSize() {
@@ -53,8 +68,14 @@ public class BoardDisplay extends JPanel implements Observer {
 
 	@Override
 	public void update() {
+		this.controller.update();
 		repaint();
 		
+	}
+
+	public void addObserver(Observer playcontrol) {
+		this.controller = playcontrol;
+		((ActionController) playcontrol).addDisplay(this);
 	}
 
 }
