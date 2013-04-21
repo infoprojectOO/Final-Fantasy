@@ -17,4 +17,9 @@ public class Building implements IMapComponent {
 		return this.look;
 	}
 
+	@Override
+	public boolean isActive() {
+		return false;
+	}
+
 }

@@ -1,19 +1,11 @@
 package gui;
 
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JPanel;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 
 import control.ActionController;
-
-import actions.Move;
-
-import settings.ActionsMap;
-import settings.KeyMap;
+import control.Orientation;
 
 import character.Player;
 
@@ -30,24 +22,41 @@ public class BoardDisplay extends JPanel implements Observer {
 
 	public BoardDisplay(PlayBoard board, Player player) {
 		super();
+		this.setSize(width, height);
 		this.player = player;
 		this.gameboard = board;
 		this.ScaleX = BoardDisplay.width/this.gameboard.getWidth();
 		this.ScaleY = BoardDisplay.height/this.gameboard.getHeigth();
 	}
+	
+	public int getScale(Orientation axis) {
+		if (axis == Orientation.X) {
+			return this.ScaleX;
+		} else {
+			return this.ScaleY;
+		}
+	}
+	
+	public int getWidth() {
+		return width;
+	}
 
-	public int getScaleX() {
+	public int getHeight() {
+		return height;
+	}
+
+	/*public int getScaleX() {
 		return ScaleX;
 	}
 
 	public int getScaleY() {
 		return ScaleY;
-	}
+	}*/
 
 	public void paint(Graphics g) {
 		g.drawImage(this.gameboard.getBackground(), 0, 0, width, height,null);
 		drawComponents(g);
-		g.drawImage(this.player.getLook(), player.getPosX(), player.getPosY() , ScaleX, ScaleY, null);
+		g.drawImage(this.player.getLook(), player.getPos(Orientation.X), player.getPos(Orientation.Y), ScaleX, ScaleY, null);
 		
 	}
 
@@ -61,10 +70,6 @@ public class BoardDisplay extends JPanel implements Observer {
 			}
 		}
 	}
-
-	public Dimension getPreferredSize() {
-        return new Dimension(BoardDisplay.width,BoardDisplay.height);
-    }
 
 	@Override
 	public void update() {

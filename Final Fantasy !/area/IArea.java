@@ -1,9 +1,10 @@
 package area;
 
-import java.awt.Image;
+import control.DisplayController;
 
 import world.IMapComponent;
+import world.PlayBoard;
 
 public interface IArea extends IMapComponent {
-	Image getLook();
+	void lead(DisplayController dispcontrol);
 }

@@ -9,4 +9,9 @@ public class EmptySlot implements IMapComponent {
 		return null;
 	}
 
+	@Override
+	public boolean isActive() {
+		return false;
+	}
+
 }

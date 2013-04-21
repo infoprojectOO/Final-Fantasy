@@ -1,5 +1,5 @@
 package world;
-import gui.BoardDisplay;
+import gui.Observer;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
@@ -9,33 +9,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import actions.Move;
+import control.Orientation;
+
 import add_on.GraphImage;
 import area.IArea;
-
-import character.Player;
-
 
 public class PlayBoard {
 	private  List<Map<Integer,IMapComponent>> map;
 	private int width,height;
-	private Player explorer;
 	private Point coordinates;
-	private BoardDisplay display;
 	private BufferedImage background;
-	private final static Integer[][] around = {{1,0},{0,1},{-1,0},{0,-1}};
-	private final static List<String> ways = Arrays.asList("right","up","left","down");
+	private Observer display;
+//	private final static Map<String,Integer[]> around = new HashMap<String,Integer[]>(); {
+//		around.put("right", new Integer[] {1,0});
+//		around.put("up", new Integer[] {0,1});
+//		around.put("left", new Integer[] {-1,0});
+//		around.put("down", new Integer[] {0,-1});
+//	}
+
 	
-	public PlayBoard(int width,int height,Player player) {
+	public PlayBoard(int width,int height, String name) {
 		if ((width | height) <= 0) {
 			throw new RuntimeException("Negative Bounds");
 		}
 		else {
 			this.height = height;
 			this.width = width;
-			this.background = GraphImage.getImage("final-fantasy-wallpaper.jpg", this);
-			this.explorer = player;
-			this.explorer.setPosition(0, 0);
+			this.background = GraphImage.getImage(name + ".jpg", this);
 			this.coordinates = new Point(0,0);
 			this.map = new ArrayList<Map<Integer,IMapComponent>>();
 			for (int i=0;i<height;i++) {
@@ -70,11 +70,13 @@ public class PlayBoard {
 	}
 
 	public IMapComponent get(int w, int h) {
-		if (!isEmpty(w,h)) {
-			return this.map.get(w).get(h);
-		} else {
-			return (new EmptySlot());
-		}
+		IMapComponent res = new EmptySlot();
+		try { 
+			if (!isEmpty(w,h)) {
+				res = this.map.get(w).get(h);
+			} 
+		} catch (RuntimeException e) {}
+		return res;
 	}
 
 	public void put(IMapComponent piece, int w, int h) {
@@ -94,33 +96,33 @@ public class PlayBoard {
 		return (w<this.width && h<this.height && w>=0 && h>=0);
 	}
 	
-	public void trackPlayer(int x, int y) {
-		this.coordinates.x = x;
-		this.coordinates.y = y;
-	}
+/*	public void trackPlayer(int x, int y) {
+		if (x>=0) {this.coordinates.x = x;}
+		if (y>=0) {this.coordinates.y = y;}
+	}*/
 
-	public void addObserver(BoardDisplay board) {
-		this.display = board;
+	public void addObserver(Observer o) {
+		this.display = o;
 		
 	}
 
-	public Player getPlayer() {
-		return this.explorer;
+	public IMapComponent getTarget(Orientation arrow, Point pos) {
+		int w = pos.x + arrow.getShifting()[0];
+		int h = pos.y + arrow.getShifting()[1];
+		return this.get(w, h);
 	}
 
-	public boolean hasWay(String direction) {
-		int i = ways.indexOf(direction);
-		int w = this.coordinates.x+around[i][0];
-		int h = this.coordinates.y+around[i][1];
+	public boolean hasWay(Orientation arrow, Point pos) {
 		boolean valid=false;
-		try { 
+		int w =	pos.x + arrow.getShifting()[0];
+		int h = pos.y + arrow.getShifting()[1];
+		try {
 			if(isEmpty(w,h)){
 				valid = true;
 			} else if(get(w,h) instanceof IArea){
 				valid = true;
-			}
-		} catch (RuntimeException e) {System.out.println(" caught " + PlayBoard.ways.get(i));}
+			} 
+		} catch (RuntimeException e) {}
 		return valid;
-				
 	}
 }

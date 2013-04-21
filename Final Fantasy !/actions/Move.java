@@ -6,23 +6,21 @@ import javax.swing.AbstractAction;
 import javax.swing.Icon;
 
 import control.ActionController;
+import control.Orientation;
 
 import world.PlayBoard;
 
 public class Move extends AbstractAction {
 	private int dx,dy;
-	private String id;
-	private PlayBoard actionground;
+	private Orientation id;
 	private ActionController actioncenter;
 	
-	public Move(String id,int dx, int dy, ActionController playcontrol) {
+	public Move(Orientation dir,int dx, int dy, ActionController playcontrol) {
 		super();
-		this.id = id;
+		this.id = dir;
 		this.dx = dx;
 		this.dy = dy;
-		this.actioncenter = playcontrol;
-		this.actionground = playcontrol.getBoard();
-		
+		this.actioncenter = playcontrol;		
 	}
 
 	public Move(String arg0) {
@@ -35,9 +33,7 @@ public class Move extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		if (this.actionground.hasWay(this.id)){
-			this.actioncenter.shift(dx, dy);
-		}
+		this.actioncenter.shift(dx, dy, id);
 	}
 
 }

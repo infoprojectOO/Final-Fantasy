@@ -3,15 +3,11 @@ package control;
 import gui.BoardDisplay;
 import gui.Observer;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 import scenario.History;
 
 import character.Player;
 
+import world.IMapComponent;
 import world.PlayBoard;
 import world.World;
 
@@ -20,36 +16,70 @@ public class ActionController implements Observer {
 	private Player motioncharacter;
 	private PlayBoard playground;
 	private BoardDisplay boarddisplay;
+	private ContactController contact;
+	private DisplayController dispcontrol;
 	
-	public ActionController(World world) {
+	public ActionController(World world, DisplayController dispcontrol) {
 		this.world = world;
-		this.playground = this.world.getBoard(History.currentPlace());
+		this.dispcontrol = dispcontrol;
+		this.playground = this.world.getBoard();
 		this.motioncharacter = world.getPlayer();
+		this.contact = new ContactController(world);
 	}
 
 	@Override
 	public void update() {
-		int xr = this.motioncharacter.getPosX()%this.boarddisplay.getScaleX();
-		int yr = this.motioncharacter.getPosY()%this.boarddisplay.getScaleY();
-		if (xr==0 && yr==0) {
-			int x = this.motioncharacter.getPosX()/this.boarddisplay.getScaleX();
-			int y = this.motioncharacter.getPosY()/this.boarddisplay.getScaleY();
-			this.playground.trackPlayer(x,y);
+		int xr = this.motioncharacter.getPos(Orientation.X)%this.boarddisplay.getScale(Orientation.X);
+		int yr = this.motioncharacter.getPos(Orientation.Y)%this.boarddisplay.getScale(Orientation.Y);
+		int x = this.motioncharacter.getPos(Orientation.X)/this.boarddisplay.getScale(Orientation.X);
+		int y = this.motioncharacter.getPos(Orientation.Y)/this.boarddisplay.getScale(Orientation.Y);
+		if (xr==0) {
+			this.motioncharacter.setLeeway(Orientation.X, false);
+			this.contact.splitSquare(Orientation.Y,x);
+		} else {
+			this.motioncharacter.setLeeway(Orientation.X, true);
+		} if (yr==0) {			
+			this.motioncharacter.setLeeway(Orientation.Y, false);
+			this.contact.splitSquare(Orientation.X,y);
+		} else {
+			this.motioncharacter.setLeeway(Orientation.Y, true);
 		}
-		
 	}
 
 	public PlayBoard getBoard() {
 		return this.playground;
 	}
 
-	public void shift(int dx, int dy) {
-		this.motioncharacter.move(dx, dy);
-		this.update();
+	public void shift(int dx, int dy, Orientation id) {
+		this.motioncharacter.setArrow(id);
+		if (this.contact.noContact()){
+			this.motioncharacter.move(dx, dy);
+			this.update();
+			this.dispcontrol.update();
+		}	
 	}
 
 	public void addDisplay(BoardDisplay board) {
-		this.boarddisplay = board;	
+		this.boarddisplay = board;
+		this.contact.addDisplay(board);
+	}
+
+	public void undertake(boolean accept) {
+		if (accept) {
+			IMapComponent target = this.contact.getTarget();
+			if (target.isActive()) {
+				System.out.println("not yet !");
+			}
+		}
+	}
+	
+	public void menu(boolean skipsave) {
+		this.dispcontrol.displaymenu(skipsave);
+	}
+
+	public void changeBoard(PlayBoard boardmodel) {
+		this.playground = boardmodel;
+		this.contact.changeBoard(boardmodel);
 	}
 	
 	

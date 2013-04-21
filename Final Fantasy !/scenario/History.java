@@ -14,7 +14,7 @@ public class History {
 	}
 
 	private static List<String> writeHistory() {
-		List<String> places = Arrays.asList("First","Second","Third");
+		List<String> places = Arrays.asList("Mithra","Towem","Tazul");
 		return places;
 	}
 	
