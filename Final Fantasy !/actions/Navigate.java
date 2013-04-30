@@ -22,8 +22,7 @@ public class Navigate extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent prev) {
-		this.navigator.removeLayer(0);
-		this.navigator.getComponent(0).setEnabled(true);
+		this.navigator.removeLayer(navigator.highestLayer());
 	}
 
 }

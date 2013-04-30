@@ -1,6 +1,7 @@
 package control;
 
 
+import gui.ChatPane;
 import gui.RootLayer;
 
 import javax.swing.JFrame;

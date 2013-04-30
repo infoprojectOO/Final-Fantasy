@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,8 +14,6 @@ import java.util.Map;
 import javax.swing.*;
 
 import actions.Navigate;
-
-import control.Launcher;
 
 import settings.*;
 

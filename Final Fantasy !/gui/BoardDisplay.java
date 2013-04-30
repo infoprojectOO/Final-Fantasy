@@ -1,11 +1,16 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Label;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import add_on.GraphImage;
+
 import control.ActionController;
-import control.Orientation;
+import convention.Axis;
 
 import character.Player;
 
@@ -17,20 +22,23 @@ public class BoardDisplay extends JPanel implements Observer {
 	private int ScaleX; //1 block = x coordinates
 	private int ScaleY; //1 block = y coordinates
 	private Player player;
+	private JLabel space;
 	private PlayBoard gameboard;
 	private Observer controller;
 
 	public BoardDisplay(PlayBoard board, Player player) {
 		super();
-		this.setSize(width, height);
+		this.setSize(new Dimension(width, height));
 		this.player = player;
 		this.gameboard = board;
+		this.space = new JLabel(player.getMove());
+		this.add(space);
 		this.ScaleX = BoardDisplay.width/this.gameboard.getWidth();
 		this.ScaleY = BoardDisplay.height/this.gameboard.getHeigth();
 	}
 	
-	public int getScale(Orientation axis) {
-		if (axis == Orientation.X) {
+	public int getScale(Axis axis) {
+		if (axis == Axis.X) {
 			return this.ScaleX;
 		} else {
 			return this.ScaleY;
@@ -44,28 +52,25 @@ public class BoardDisplay extends JPanel implements Observer {
 	public int getHeight() {
 		return height;
 	}
-
-	/*public int getScaleX() {
-		return ScaleX;
-	}
-
-	public int getScaleY() {
-		return ScaleY;
-	}*/
-
+	
+	@Override
 	public void paint(Graphics g) {
 		g.drawImage(this.gameboard.getBackground(), 0, 0, width, height,null);
 		drawComponents(g);
-		g.drawImage(this.player.getLook(), player.getPos(Orientation.X), player.getPos(Orientation.Y), ScaleX, ScaleY, null);
-		
+		g.drawImage(this.player.getLook(), player.getPos(Axis.X)*ScaleX, player.getPos(Axis.Y)*ScaleY, 
+				player.getBreadth(Axis.X)*ScaleX, player.getBreadth(Axis.Y)*ScaleY, null);
+//		this.space.setLocation(player.getPos(Axis.X), player.getPos(Axis.Y));
+//		this.space.paint(g);
 	}
 
 	private void drawComponents(Graphics g) {
 		for (int w=0;w<this.gameboard.getWidth();w++) {
 			for (int h=0;h<this.gameboard.getHeigth();h++) {
-				if (!this.gameboard.isEmpty(w, h)) {
+				if (this.gameboard.isRoot(w, h)) {
 					IMapComponent mc = this.gameboard.get(w, h);
-					g.drawImage(mc.getLook(), w*ScaleX, h*ScaleY, ScaleX, ScaleY, null);
+					int pw = (int) mc.getBreadth(Axis.X);
+					int ph = (int) mc.getBreadth(Axis.Y);
+					g.drawImage(mc.getLook(), w*ScaleX, h*ScaleY, pw*ScaleX, ph*ScaleY, null);
 				}
 			}
 		}
@@ -75,7 +80,6 @@ public class BoardDisplay extends JPanel implements Observer {
 	public void update() {
 		this.controller.update();
 		repaint();
-		
 	}
 
 	public void addObserver(Observer playcontrol) {

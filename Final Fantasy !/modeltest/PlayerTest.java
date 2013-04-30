@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import control.Orientation;
+import convention.Axis;
 
 import character.Player;
 
@@ -21,7 +21,7 @@ public class PlayerTest {
 	@Test
 	public void leewayTest() {
 		assertTrue(player.isCloistered());
-		player.setLeeway(Orientation.X,true);
+		player.setLeeway(Axis.X,true);
 		assertFalse(player.isCloistered());
 	}
 

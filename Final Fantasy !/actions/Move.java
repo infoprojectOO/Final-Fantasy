@@ -6,9 +6,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Icon;
 
 import control.ActionController;
-import control.Orientation;
-
-import world.PlayBoard;
+import convention.Axis;
+import convention.Orientation;
 
 public class Move extends AbstractAction {
 	private int dx,dy;

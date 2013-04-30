@@ -3,11 +3,14 @@ package control;
 import java.awt.Point;
 
 import gui.BoardDisplay;
+import gui.ChatPane;
 import gui.Observer;
 import gui.RootLayer;
 import gui.SaveMenu;
 
 import javax.swing.*;
+
+import convention.Axis;
 
 import area.BattleField;
 import area.IArea;
@@ -32,7 +35,9 @@ public class DisplayController implements Observer {
 	private ActionController playcontrol;
 	private ActionsMap actmap;
 	private RootLayer layer;
-	private MenuController menucontrol; 
+	private ChatPane chatpane;
+	private MenuController menucontrol;
+	private MotionController motioncontrol; 
 	
 	public DisplayController(int width, int height, World world, JFrame gameframe, RootLayer layer) {
 		super();
@@ -46,8 +51,11 @@ public class DisplayController implements Observer {
 		this.actmap = new ActionsMap(this.playcontrol);
 		BoardDisplay.width = width;
 		BoardDisplay.height = height;
+		ChatBox cb = this.worldmodel.getChatBox();
+		this.chatpane = new ChatPane(layer, cb, new ChatListener(cb));
 		this.player = this.worldmodel.getPlayer();
 		this.boardmodel = this.worldmodel.getBoard();
+		this.motioncontrol = new MotionController(this.boardmodel);
 		this.board = new BoardDisplay(boardmodel,player);
 		set(this.board);
 		this.boardmodel.addObserver(board);
@@ -65,14 +73,7 @@ public class DisplayController implements Observer {
 
 	@Override
 	public void update() {
-		if (this.player.isCloistered()) {
-			int x = this.player.getPos(Orientation.X)/this.board.getScale(Orientation.X);
-			int y = this.player.getPos(Orientation.Y)/this.board.getScale(Orientation.Y);
-			IMapComponent object = this.boardmodel.get(x, y);
-			if (object instanceof IArea) {
-				((IArea) object).lead(this);				
-			}
-		}
+		
 		
 	}
 
@@ -80,7 +81,7 @@ public class DisplayController implements Observer {
 		this.boardmodel = destination;
 		this.playcontrol.changeBoard(boardmodel);
 		this.board = new BoardDisplay(boardmodel, this.player);
-		this.player.setPosition(landing.x*board.getScale(Orientation.X),landing.y*board.getScale(Orientation.Y));
+		this.player.setPosition(landing.x*board.getScale(Axis.X),landing.y*board.getScale(Axis.Y));
 		this.player.addObserver(board);
 		set(board);		
 	}
@@ -92,9 +93,9 @@ public class DisplayController implements Observer {
 	public void displaymenu(boolean skipsave) {
 		this.menucontrol.display(skipsave);
 	}
-	
-	
 
-	
+	public void refresh() {
+//		this.layer.validate();
+	}	
 
 }

@@ -1,10 +1,7 @@
 package settings;
 
-import gui.DoubleTextField;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +9,7 @@ import javax.swing.InputMap;
 import javax.swing.KeyStroke;
 
 public class KeyMap extends InputMap {
+	private final static String[] specials = {"down","up","left","right"};
 	public final static Map<String,Integer> default_keys = new HashMap<String,Integer>() {
 		{
 			put("down",KeyEvent.VK_DOWN);
@@ -32,13 +30,15 @@ public class KeyMap extends InputMap {
 	public KeyMap() {
 		super();
 		setMap();
-		
 	}
 	
 	public void setMap() {
 		for (String keystr : custom_keys.keySet()) {
 			this.put(KeyStroke.getKeyStroke(custom_keys.get(keystr),0), keystr);
+		} for (String spc : specials) {
+			this.put(KeyStroke.getKeyStroke(custom_keys.get(spc),0,true), spc+" stop");
 		}
+		
 	}
 	
 	public static void customize(HashMap<String,Integer> map) {

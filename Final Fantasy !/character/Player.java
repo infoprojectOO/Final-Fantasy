@@ -4,44 +4,68 @@ import gui.Observer;
 
 import item.IItem;
 
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import control.Orientation;
+import javax.swing.Icon;
+
+import control.ContactController;
+import convention.Axis;
+import convention.Measurement;
+import convention.Orientation;
 
 import add_on.GraphImage;
 
-import world.IMapComponent;
-
-public class Player implements IMapComponent {
+public class Player implements IMotionCharacter {
+//	private int counter;
+//	private final HashMap<Orientation,BufferedImage[]> moves = new HashMap<Orientation,BufferedImage[]>() {
+//		{
+//			put(Orientation.DOWN,new BufferedImage[] {GraphImage.getImage("CloudU0.gif",this),GraphImage.getImage("CloudU1.gif",this),
+//					GraphImage.getImage("CloudU2.gif",this),GraphImage.getImage("CloudU3.gif",this)}); 
+//		}
+//	};
 	private BufferedImage look;
-	private int posX = 0, posY = 0;
+	private Dimension size;
+	private Point position = new Point(0,0);
 	private boolean[] leeway = {false,false};
 	private Orientation arrow;
 	private Map<String,IItem> inventory;
 	private Observer display;
+	private Map<Orientation,Icon> moves;
+	private ContactController contact;
 
 	public Player() {
 		this.inventory = new HashMap<String,IItem>();
+		this.moves = new HashMap<Orientation,Icon>();
+		this.moves.put(Orientation.UP,GraphImage.getIcon("CloudUp.gif", this));
 		this.look = GraphImage.getImage("Cloud_Strife_Nomura_art.jpg", this);
+		this.size = Measurement.PLAYER.getSize();
 		this.arrow = Orientation.UP;		
 	}
 
 	public void setPosition(int x, int y) {
-		this.posX = x;
-		this.posY = y;
+		this.position = new Point(x,y);
 	}
 	
-	public void setArrow(Orientation cst) {
-		this.arrow = cst;
+	@Override
+	public void setArrow(Orientation arrow) {
+		this.arrow = arrow;
 	}
 	
-	public void setLeeway(Orientation axis, boolean state) {
-		if (axis==Orientation.X) {
+	@Override
+	public Orientation getArrow() {
+		return this.arrow;
+	}
+	
+	public void setLeeway(Axis axis, boolean state) {
+		if (axis==Axis.X) {
 			this.leeway[0] = state;
-		} else if (axis==Orientation.Y) {
+		} else if (axis==Axis.Y) {
 			this.leeway[1] = state;
 		}
 	}
@@ -51,28 +75,28 @@ public class Player implements IMapComponent {
 	}
 	
 	public void move(int dx, int dy) {
-		setPosition(this.posX + dx,this.posY + dy);
+		this.position.translate(dx, dy);
 		this.display.update();
 	}
 
 	public Image getLook() {
 		return this.look;
 	}
-
-	public int getPos(Orientation axis) {
-		if (axis == Orientation.X) {
-			return this.posX;
-		} else {
-			return this.posY;
-		}
-	}
 	
-	public Orientation getArrow() {
-		return arrow;
+	public Icon getMove() {
+		return this.moves.get(this.arrow);
+	}
+
+	public int getPos(Axis axis) {
+		if (axis == Axis.X) {
+			return this.position.x;
+		} else {
+			return this.position.y;
+		}
 	}
 
 	public boolean hasLeeway() {
-		if (this.arrow.getAxis()==Orientation.Y.getAxis()) {
+		if (this.arrow.getAxis()==Axis.Y) {
 			return this.leeway[1];
 		} else {
 			return this.leeway[0];
@@ -84,8 +108,27 @@ public class Player implements IMapComponent {
 	}
 
 	@Override
-	public boolean isActive() {
-		return true;
+	public Integer getBreadth(Axis axis) {
+		if (axis==Axis.X)
+		{
+			return (int) this.size.getWidth();
+		} else {
+			return (int) this.size.getHeight();
+		}
+	}
+
+	@Override
+	public Dimension getSize() {
+		return this.size;
+	}
+
+	@Override
+	public void awaken() {
+		System.out.println("Multiplayer ?");
+	}
+
+	@Override
+	public void requestMove() {	
 	}
 	
 }

@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -29,7 +30,8 @@ public class MainMenu extends JPanel {
 			this.buttons[i].setAlignmentX(CENTER_ALIGNMENT);
 			this.add(this.buttons[i]);
 		}
-		this.setSize(this.background.getWidth(null),this.background.getHeight(null));
+		this.setSize(new Dimension(this.background.getWidth(null),this.background.getHeight(null)));
+		this.setPreferredSize(this.getSize());
 	}
 	
 	@Override

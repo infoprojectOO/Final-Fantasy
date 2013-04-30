@@ -1,12 +1,12 @@
 package area;
 
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JPanel;
-
 import control.DisplayController;
+import convention.Axis;
 
 import add_on.GraphImage;
 
@@ -14,6 +14,7 @@ import world.PlayBoard;
 
 public class Portal implements IArea {
 	private BufferedImage look;
+	private Dimension size;
 	private PlayBoard in;
 	private PlayBoard out;
 	private Point inpoint;
@@ -21,6 +22,7 @@ public class Portal implements IArea {
 
 	public Portal() {
 		this.look = GraphImage.getImage("portal.jpg", this);
+		this.size = new Dimension(10,10);
 	}
 	
 	public Portal reversed() {
@@ -28,11 +30,6 @@ public class Portal implements IArea {
 		twin.setIn(out, outpoint);
 		twin.setOut(in, inpoint);
 		return twin;
-	}
-
-	@Override
-	public boolean isActive() {
-		return false;
 	}
 
 	@Override
@@ -62,6 +59,25 @@ public class Portal implements IArea {
 	@Override
 	public void lead(DisplayController dispcontrol) {
 		dispcontrol.teleport(this.out,this.outpoint);		
+	}
+
+	@Override
+	public Dimension getSize() {
+		return this.size;
+	}
+
+	@Override
+	public Integer getBreadth(Axis axis) {
+		if (axis==Axis.X)
+		{
+			return (int) this.size.getWidth();
+		} else {
+			return (int) this.size.getHeight();
+		}
+	}
+
+	@Override
+	public void awaken() {		
 	}
 
 }

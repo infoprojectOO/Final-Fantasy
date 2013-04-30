@@ -4,29 +4,26 @@ import gui.Observer;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
-import control.Orientation;
+import character.IMotionCharacter;
+
+import convention.Orientation;
 
 import add_on.GraphImage;
 import area.IArea;
 
 public class PlayBoard {
-	private  List<Map<Integer,IMapComponent>> map;
+	private  List<SortedMap<Integer,IMapComponent>> map;
 	private int width,height;
-	private Point coordinates;
 	private BufferedImage background;
 	private Observer display;
-//	private final static Map<String,Integer[]> around = new HashMap<String,Integer[]>(); {
-//		around.put("right", new Integer[] {1,0});
-//		around.put("up", new Integer[] {0,1});
-//		around.put("left", new Integer[] {-1,0});
-//		around.put("down", new Integer[] {0,-1});
-//	}
-
+	private Map<IMapComponent,Point> roots;
+	private List<IMotionCharacter> chars;
 	
 	public PlayBoard(int width,int height, String name) {
 		if ((width | height) <= 0) {
@@ -36,10 +33,10 @@ public class PlayBoard {
 			this.height = height;
 			this.width = width;
 			this.background = GraphImage.getImage(name + ".jpg", this);
-			this.coordinates = new Point(0,0);
-			this.map = new ArrayList<Map<Integer,IMapComponent>>();
+			this.map = new ArrayList<SortedMap<Integer,IMapComponent>>();
+			this.roots = new HashMap<IMapComponent,Point>();
 			for (int i=0;i<height;i++) {
-				this.map.add(new HashMap<Integer,IMapComponent>());
+				this.map.add(new TreeMap<Integer,IMapComponent>());
 			}		
 		}
 	}
@@ -68,6 +65,10 @@ public class PlayBoard {
 		}
 		
 	}
+	
+	public boolean isRoot(int w, int h) {
+		return roots.containsValue(new Point(w,h));
+	}
 
 	public IMapComponent get(int w, int h) {
 		IMapComponent res = new EmptySlot();
@@ -80,15 +81,33 @@ public class PlayBoard {
 	}
 
 	public void put(IMapComponent piece, int w, int h) {
-		if (within(w,h)) {
-			this.map.get(w).put(h, piece);	
+		int pw = (int) piece.getSize().getWidth();
+		int ph = (int) piece.getSize().getHeight();
+		if (isEmpty(w,h) && isEmpty(w+pw-1,h+ph-1)) {
+			this.roots.put(piece,new Point(w,h));
+			for (int i=0;i<pw;i++) {
+				for (int j=0;j<ph;j++) {
+					this.map.get(w+i).put(h+j, piece);
+				}
+			}
 		} else { throw new RuntimeException("Out of Bounds");
 		}
 	}
-	
-	public void remove(int w,int h) {
-		if (!isEmpty(w,h)) {
-			this.map.get(w).remove(h);
+
+	public void remove(IMapComponent piece) {
+		if (this.roots.containsKey(piece)) {
+			Point pos = this.roots.get(piece);
+			int pw = (int) piece.getSize().getWidth();
+			int ph = (int) piece.getSize().getHeight();
+			for (int i=0;i<pw;i++) {
+				for (int j=0;j<ph;j++) {
+					this.map.get(pos.x+i).remove(pos.y+j);
+				}
+			}
+			if (this.chars.contains(piece)) {
+				this.chars.remove(piece);
+			}
+			this.roots.remove(piece);
 		}
 	}
 
@@ -112,10 +131,10 @@ public class PlayBoard {
 		return this.get(w, h);
 	}
 
-	public boolean hasWay(Orientation arrow, Point pos) {
+	public boolean hasWay(Orientation dir, Point pos) {
 		boolean valid=false;
-		int w =	pos.x + arrow.getShifting()[0];
-		int h = pos.y + arrow.getShifting()[1];
+		int w =	pos.x + dir.getShifting()[0];
+		int h = pos.y + dir.getShifting()[1];
 		try {
 			if(isEmpty(w,h)){
 				valid = true;
@@ -124,5 +143,21 @@ public class PlayBoard {
 			} 
 		} catch (RuntimeException e) {}
 		return valid;
+	}
+	
+	public void shift(IMotionCharacter character) {
+		Point root = this.roots.get(character);
+		Orientation arrow = character.getArrow();
+		this.remove(character);
+		this.put(character, root.x + arrow.getShifting()[0], root.y + arrow.getShifting()[1]);
+		character.move(arrow.getShifting()[0], arrow.getShifting()[1]);
+	}
+	
+	public void addMotionCharacter(IMotionCharacter imc) {
+		this.chars.add(imc);
+	}
+
+	public List<IMotionCharacter> getMotionCharacters() {
+		return this.chars;
 	}
 }

@@ -20,10 +20,10 @@ public class MenuController implements ActionListener {
 	public void display(boolean skipsave) {
 		if (skipsave) {
 			System.out.println("save");
-			this.layer.addLayer(new SaveMenu(true), layer.on_top);
+			this.layer.addLayer(new SaveMenu(true), layer.MAP);
 		} else {
 			System.out.println("menu");
-			this.layer.addLayer(this.menu, RootLayer.MENU);
+			this.layer.addLayer(this.menu, this.layer.MENU);
 		}
 	}
 

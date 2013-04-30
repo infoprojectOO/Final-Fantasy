@@ -20,10 +20,12 @@ public class RootLayerTest {
 	private RootLayer layer;
 	private BoardDisplay map1;
 	private BoardDisplay map2;
+	private JFrame window;
 
 	@Before
 	public void setUp() throws Exception {
-		this.layer = new RootLayer(new JFrame());
+		this.window = new JFrame();
+		this.layer = new RootLayer(window);
 		this.player = new Player();
 		this.map1 = new BoardDisplay(new PlayBoard(10,10,"zaneb"), player);
 		this.map2 = new BoardDisplay(new PlayBoard(12,6,"mithra"), player);
@@ -36,7 +38,7 @@ public class RootLayerTest {
 		this.layer.addLayer(map2, new Integer(1));
 		assertEquals(this.layer.getComponent(0), map2);
 		assertEquals(this.layer.getComponent(1),map1);
-		this.layer.removeLayer(1);
+		this.layer.remove(1);
 		assertEquals(this.layer.getComponent(0),map2);
 	}
 	

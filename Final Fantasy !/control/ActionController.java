@@ -1,5 +1,8 @@
 package control;
 
+import area.IArea;
+import convention.Axis;
+import convention.Orientation;
 import gui.BoardDisplay;
 import gui.Observer;
 
@@ -24,26 +27,12 @@ public class ActionController implements Observer {
 		this.dispcontrol = dispcontrol;
 		this.playground = this.world.getBoard();
 		this.motioncharacter = world.getPlayer();
-		this.contact = new ContactController(world);
+		this.contact = world.getContact();
 	}
 
 	@Override
 	public void update() {
-		int xr = this.motioncharacter.getPos(Orientation.X)%this.boarddisplay.getScale(Orientation.X);
-		int yr = this.motioncharacter.getPos(Orientation.Y)%this.boarddisplay.getScale(Orientation.Y);
-		int x = this.motioncharacter.getPos(Orientation.X)/this.boarddisplay.getScale(Orientation.X);
-		int y = this.motioncharacter.getPos(Orientation.Y)/this.boarddisplay.getScale(Orientation.Y);
-		if (xr==0) {
-			this.motioncharacter.setLeeway(Orientation.X, false);
-			this.contact.splitSquare(Orientation.Y,x);
-		} else {
-			this.motioncharacter.setLeeway(Orientation.X, true);
-		} if (yr==0) {			
-			this.motioncharacter.setLeeway(Orientation.Y, false);
-			this.contact.splitSquare(Orientation.X,y);
-		} else {
-			this.motioncharacter.setLeeway(Orientation.Y, true);
-		}
+		this.dispcontrol.refresh();		
 	}
 
 	public PlayBoard getBoard() {
@@ -52,11 +41,34 @@ public class ActionController implements Observer {
 
 	public void shift(int dx, int dy, Orientation id) {
 		this.motioncharacter.setArrow(id);
-		if (this.contact.noContact()){
+		if (this.contact.noContact(this.motioncharacter)) {
 			this.motioncharacter.move(dx, dy);
-			this.update();
-			this.dispcontrol.update();
-		}	
+			this.managePlayer();
+		}
+	}
+
+	private void managePlayer() {
+		/*int xr = this.motioncharacter.getPos(Axis.X)%this.boarddisplay.getScale(Axis.X);
+		int yr = this.motioncharacter.getPos(Axis.Y)%this.boarddisplay.getScale(Axis.Y);*/
+		int x = this.motioncharacter.getPos(Axis.X);
+		int y = this.motioncharacter.getPos(Axis.Y);
+/*		if (xr==0) {
+			this.motioncharacter.setLeeway(Axis.X, false);
+		} else {
+			this.motioncharacter.setLeeway(Axis.X, true);
+			System.out.println("x leeway");
+		} if (yr==0) {			
+			this.motioncharacter.setLeeway(Axis.Y, false);
+		} else {
+			this.motioncharacter.setLeeway(Axis.Y, true);
+			System.out.println("y leeway");
+		}*/
+		if (this.playground.isRoot(x, y)) {
+			IMapComponent object = this.playground.get(x, y);
+			if (object instanceof IArea) {
+				((IArea) object).lead(this.dispcontrol);				
+			}
+		}
 	}
 
 	public void addDisplay(BoardDisplay board) {
@@ -67,9 +79,7 @@ public class ActionController implements Observer {
 	public void undertake(boolean accept) {
 		if (accept) {
 			IMapComponent target = this.contact.getTarget();
-			if (target.isActive()) {
-				System.out.println("not yet !");
-			}
+			target.awaken();
 		}
 	}
 	

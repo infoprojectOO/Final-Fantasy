@@ -31,8 +31,8 @@ public class Launcher implements ActionListener {
 		this.layer = new RootLayer(this.window);
 		Navigate.setNavigator(this.layer);
 		this.config = new ConfigureMenu();
-		this.layer.addLayer(this.menue, new Integer(0));
 		this.window.getContentPane().add(this.layer,BorderLayout.CENTER);
+		this.layer.addLayer(this.menue, layer.LOW);
 		this.window.pack();
 		this.window.setVisible(true);
 	}
@@ -50,29 +50,30 @@ public class Launcher implements ActionListener {
 	}
 	
 	private void launchGame() {
-		try {
-			new Sound().playAudio();
-		} catch (UnsupportedAudioFileException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (LineUnavailableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.menue.setEnabled(false);
+//		try {
+//			new Sound().playAudio();
+//		} catch (UnsupportedAudioFileException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (LineUnavailableException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		Fantasy game = new Fantasy(this.window,this.layer);
 	}
 
 	private void loadGame() {
-		this.layer.addLayer(new SaveMenu(false), layer.on_top);
 		this.menue.setEnabled(false);
+		this.layer.addLayer(new SaveMenu(false), layer.MENU);
 	}
 	
 	private void configure() {
-		this.layer.addLayer(config,new Integer(10));
 		this.menue.setEnabled(false);
+		this.layer.addLayer(config, layer.MENU);
 	}
 
 	public static void main(String[] args) {
