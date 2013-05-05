@@ -32,7 +32,7 @@ public class RootLayer extends JLayeredPane {
 		this.parent.pack();
 	}
 
-	public void sizeUp() {
+	private void sizeUp() {
 		Component[] comps = this.getComponents();
 		int width = 100;
 		int height = 100; 
@@ -44,11 +44,12 @@ public class RootLayer extends JLayeredPane {
 			}
 		}
 		setPreferredSize(new Dimension(width,height));
+//		setSize(this.getPreferredSize());
 		this.parent.pack();
 	}
 
-	public void removeLayer(Integer n) {
-		for (Component comp : this.getComponentsInLayer(n)) {
+	public void removeLayer(Integer depth) {
+		for (Component comp : this.getComponentsInLayer(depth)) {
 			this.remove(comp);
 		}
 		this.getComponent(0).setEnabled(true);
@@ -57,9 +58,16 @@ public class RootLayer extends JLayeredPane {
 		this.sizeUp();		
 	}
 
-	public void replaceLayer(Component board) {
-		this.remove(0);
-		this.add(board, new Integer(0));
+	public void replaceLayer(Component board, Integer depth) {
+		for (Component comp : this.getComponentsInLayer(depth)) {
+			this.remove(comp);
+		}
+		this.add(board, new Integer(depth));
+		for (Component comp : this.getComponentsInLayer(depth)) {
+			comp.setEnabled(true);
+			comp.requestFocusInWindow();
+		}
+		this.repaint();
 		this.sizeUp();
 	}
 }

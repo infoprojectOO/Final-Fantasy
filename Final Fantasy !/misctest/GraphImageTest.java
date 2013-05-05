@@ -16,7 +16,7 @@ public class GraphImageTest {
 
 	@Test
 	public void GraphImageTest() {
-		GraphImage.getImage("fire.jpg", new BattleField());
+		GraphImage.getImage("fire.jpg", new BattleField(null));
 		GraphImage.getImage("mithra.jpg", new Building());
 		GraphImage.getImage("building.jpg", new Building());
 		GraphImage.getImage("zaneb.jpg", new Building());

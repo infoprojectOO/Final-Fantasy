@@ -4,7 +4,6 @@ import gui.Observer;
 
 import java.util.HashMap;
 
-import control.ChatBox;
 import control.ContactController;
 
 import area.*;
@@ -12,22 +11,23 @@ import area.*;
 import scenario.History;
 
 import character.Player;
+import chat.ChatBox;
+import data.DataBox;
 
 public class World {
 	private HashMap<String,NetBoard> map;
 	private Player explorer;
 	private Observer display;
-	private ChatBox chatbox;
 	private ContactController contact;
 	
 	public World() {
-		this.chatbox = new ChatBox();
 		this.explorer = new Player();
 		this.contact = new ContactController(this);
 		this.map = new HashMap<String,NetBoard>();
 		for (String s : History.PLACE_SERIES) {
-			this.map.put(s,new NetBoard(s,chatbox,contact));
-		} this.contact.changeBoard(this.getBoard());
+			this.map.put(s,new NetBoard(s,contact));
+		} this.contact.setBoard(this.getBoard());
+		this.getBoard().put(this.explorer, 0, 0);
 	}
 
 	public Player getPlayer() {
@@ -40,10 +40,6 @@ public class World {
 	
 	public PlayBoard getBoard() {
 		return map.get(History.currentPlace()).getBoard();
-	}
-
-	public ChatBox getChatBox() {
-		return this.chatbox;
 	}
 
 	public ContactController getContact() {

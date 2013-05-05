@@ -6,20 +6,25 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import battle.BattleBox;
+
 import control.DisplayController;
 import convention.Axis;
+import convention.Measurement;
 
 import world.PlayBoard;
 
 import add_on.GraphImage;
 
-public class BattleField implements IArea {
+public class BattleField extends Area {
 	private BufferedImage look;
 	private Dimension size;
+	private BattleBox battlebox;
 	
-	public BattleField() {
+	public BattleField(BattleBox battlebox) {
 		this.look = GraphImage.getImage("fire.jpg", this);
-		this.size = new Dimension(10,10);
+		this.size = Measurement.PLAYER.getSize();
+		this.battlebox = battlebox;
 	}
 
 	@Override
@@ -50,6 +55,11 @@ public class BattleField implements IArea {
 	@Override
 	public void awaken() {
 		//beginBattle();		
+	}
+
+	@Override
+	public void stomped() {
+		//this.battlebox.upload(this.battle);
 	}
 
 }

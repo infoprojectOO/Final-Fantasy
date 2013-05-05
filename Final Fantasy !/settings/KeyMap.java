@@ -26,6 +26,7 @@ public class KeyMap extends InputMap {
 			putAll(default_keys);
 		}
 	};
+	private static Map<String,Integer> temporary_keys;
 	
 	public KeyMap() {
 		super();
@@ -43,6 +44,29 @@ public class KeyMap extends InputMap {
 	
 	public static void customize(HashMap<String,Integer> map) {
 		custom_keys.putAll(map);				
+	}
+	
+	public static Map<String, Integer> getTemp() {
+		if (temporary_keys == null) {
+			temporary_keys = new HashMap<String,Integer>();
+		}
+		return temporary_keys;
+	}
+
+	public static void upload(String actionId, Integer keycode) {
+		if (temporary_keys == null) {
+			temporary_keys = new HashMap<String,Integer>() {
+				{
+					putAll(custom_keys);
+				}
+			};
+		}
+		temporary_keys.put(actionId, keycode);
+	}
+
+	public static void customize() {
+		custom_keys.putAll(temporary_keys);
+		temporary_keys = null;
 	}
 
 }

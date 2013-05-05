@@ -21,7 +21,7 @@ public class PortalTest {
 	public void setUp() throws Exception {
 		one = new PlayBoard(10,10,"mithra");
 		two = new PlayBoard(5,5,"zaneb");
-		this.portal = new Portal();
+		this.portal = new Portal(null);
 		portal.setIn(one, new Point(2,6));
 		portal.setOut(two, new Point(3,0));
 	}

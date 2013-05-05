@@ -3,28 +3,25 @@ package control;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import gui.GameMenu;
+import data.DataBox;
+
+import gui.MenuDisplay;
 import gui.RootLayer;
 import gui.SaveMenu;
 
 public class MenuController implements ActionListener {
 	private RootLayer layer;
-	private FileController filecontrol;
-	private GameMenu menu;
+	private DataListener filecontrol;
+	private MenuDisplay menu;
 
 	public MenuController(RootLayer layer) {
 		this.layer = layer;
-		this.menu = new GameMenu(this);
+		this.menu = new MenuDisplay(this);
 	}
 	
-	public void display(boolean skipsave) {
-		if (skipsave) {
-			System.out.println("save");
-			this.layer.addLayer(new SaveMenu(true), layer.MAP);
-		} else {
-			System.out.println("menu");
-			this.layer.addLayer(this.menu, this.layer.MENU);
-		}
+	public void display() {
+		System.out.println("menu");
+		this.layer.addLayer(this.menu, this.layer.MENU);
 	}
 
 	@Override

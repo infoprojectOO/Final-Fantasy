@@ -6,9 +6,9 @@ import gui.Observer;
 import org.junit.Before;
 import org.junit.Test;
 
-import control.ChatBox;
 
-import character.ChatTree;
+import chat.ChatBox;
+import chat.ChatTree;
 
 public class ChatBoxTest {
 	private ChatBox chatbox;
@@ -22,22 +22,19 @@ public class ChatBoxTest {
 			public void update() {}
 		});
 		this.chat = new ChatTree();
-		this.chatbox.upload(chat);
+		this.chatbox.upload(chat,null);
 	}
 
 	@Test
 	public void testExtractReceive() {
-		assertEquals(this.chatbox.extract()[0],chat.getNextFlow().get(0));
-		this.chatbox.receive(chat.getNextFlow().get(0));
-		assertTrue(this.chatbox.extract()[0].equals(chat.getNextFlow().get(1)));
-		this.chatbox.receive(chat.getNextFlow().get(1));
+		assertEquals(this.chatbox.extract()[0],chat.getNextFlow()[0]);
+		this.chatbox.receive(chat.getNextFlow()[0]);
+		assertTrue(this.chatbox.extract()[0].equals(chat.getNextFlow()[1]));
+		this.chatbox.receive(chat.getNextFlow()[1]);
 		assertTrue(this.chatbox.extract()[0].equals(chat.getNextChoice()[0]));
 		this.chatbox.receive(chat.getNextChoice()[0]);
-		assertEquals(this.chatbox.extract()[0],chat.getNextFlow().get(0));
-		assertTrue(this.chatbox.extract()[0].equals(chat.getNextFlow().get(1)));
-		assertEquals(this.chatbox.extract(),null);
-		this.chatbox.terminate();
-
-		
+		assertEquals(this.chatbox.extract()[0],chat.getNextFlow()[0]);
+		assertTrue(this.chatbox.extract()[0].equals(chat.getNextFlow()[1]));
+		assertTrue(this.chatbox.extract().equals(null));		
 	}
 }

@@ -3,9 +3,12 @@ package character;
 import java.awt.Dimension;
 import java.awt.Image;
 
+import chat.ChatBox;
+import chat.ChatTree;
+
 import add_on.GraphImage;
 
-import control.ChatBox;
+import convention.Access;
 import convention.Axis;
 import convention.Measurement;
 import world.IMapComponent;
@@ -15,6 +18,7 @@ public abstract class People implements IMapComponent {
 	private Dimension size;
 	private ChatTree chat;
 	private ChatBox chatbox;
+	protected boolean talking = false;
 
 	public People(Measurement mes,String name, ChatBox chatbox) {
 		this.size = mes.getSize();
@@ -23,8 +27,13 @@ public abstract class People implements IMapComponent {
 		this.chatbox = chatbox;
 	}
 	
-	private void talk() {
-		this.chatbox.upload(chat);
+	public void talk(boolean state) {
+		this.talking = state;
+		if (talking) {
+			this.chatbox.upload(chat,this);
+		} else {
+			this.chat.rewind();
+		}
 	}
 	
 	public void setLook(String name) {
@@ -52,7 +61,11 @@ public abstract class People implements IMapComponent {
 	
 	@Override
 	public void awaken() {
-		talk();
+		talk(true);
 	}
 
+	@Override
+	public boolean allowsAccess(Access ackey) {
+		return false;
+	}
 }

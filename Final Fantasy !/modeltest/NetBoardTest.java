@@ -5,7 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import control.ChatBox;
+import chat.ChatBox;
+
 
 import area.Portal;
 
@@ -17,7 +18,7 @@ public class NetBoardTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.netboard = new NetBoard("Mithra",new ChatBox(), null);
+		this.netboard = new NetBoard("Mithra", null);
 	}
 
 /*	@Test

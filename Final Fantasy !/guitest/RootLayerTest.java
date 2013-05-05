@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import character.Player;
 
+import world.Box;
 import world.PlayBoard;
 
 public class RootLayerTest {
@@ -27,8 +28,8 @@ public class RootLayerTest {
 		this.window = new JFrame();
 		this.layer = new RootLayer(window);
 		this.player = new Player();
-		this.map1 = new BoardDisplay(new PlayBoard(10,10,"zaneb"), player);
-		this.map2 = new BoardDisplay(new PlayBoard(12,6,"mithra"), player);
+		this.map1 = new BoardDisplay(Box.board, player);
+		this.map2 = new BoardDisplay(Box.board, player);
 	}
 
 	@Test
@@ -44,8 +45,8 @@ public class RootLayerTest {
 	
 	@Test
 	public void replaceTest() {
-		this.layer.addLayer(map1, new Integer(0));
-		this.layer.replaceLayer(map2);
+		this.layer.addLayer(map1, layer.MAP);
+		this.layer.replaceLayer(map2, layer.MAP);
 		assertEquals(this.layer.getComponent(0), map2);
 	}
 

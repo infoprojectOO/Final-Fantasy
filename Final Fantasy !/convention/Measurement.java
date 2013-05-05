@@ -3,6 +3,9 @@ package convention;
 import java.awt.Dimension;
 
 public enum Measurement {
+	ITEM_S (5,5),
+	ITEM_M (6,6),
+	ITEM_L (8,8),
 	LIVING_S (7,7),
 	LIVING_M (10,10),
 	LIVING_L (12,12),

@@ -1,37 +1,40 @@
 package add_on;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import gui.ChatPane;
-import gui.GameMenu;
+import gui.MenuDisplay;
 import gui.RootLayer;
 import gui.SaveMenu;
 
 import javax.swing.*;
 
-import character.ChatTree;
+import actions.Exit;
+import actions.Navigate;
 
-import control.ChatBox;
+import chat.ChatBox;
+import chat.ChatTree;
+
 import control.ChatListener;
+import control.MenuController;
 
 public class QuickTesting {
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
-		ChatBox chatbox = new ChatBox();
+		Exit.setWindow(frame);
 		RootLayer layer = new RootLayer(frame);
-		frame.getContentPane().add(layer);
-		layer.add(new JPanel(),layer.LOW);
-		System.out.println(layer.highestLayer());
-		ChatPane panel = new ChatPane(layer, chatbox, new ChatListener(chatbox));
-		chatbox.upload(new ChatTree());
+		Navigate.setNavigator(layer);
+		MenuDisplay menu = new MenuDisplay(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {}			
+		});
+		frame.getContentPane().add(layer,BorderLayout.CENTER);
+		layer.add(menu,layer.LOW);
 		frame.pack();
 		frame.setVisible(true);
 

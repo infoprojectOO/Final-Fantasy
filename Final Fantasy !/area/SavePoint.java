@@ -8,18 +8,21 @@ import javax.swing.JPanel;
 
 import control.DisplayController;
 import convention.Axis;
+import data.DataBox;
 
 import world.PlayBoard;
 
 import add_on.GraphImage;
 
-public class SavePoint implements IArea {
+public class SavePoint extends Area {
 	private BufferedImage look;
 	private Dimension size;
+	private DataBox databox;
 	
-	public SavePoint() {
+	public SavePoint(DataBox databox) {
 		this.look = GraphImage.getImage("save_crystal.jpg", this);
 		this.size = new Dimension(10,10);
+		this.databox = databox;
 	}
 
 	@Override
@@ -49,6 +52,11 @@ public class SavePoint implements IArea {
 
 	@Override
 	public void awaken() {	
+	}
+
+	@Override
+	public void stomped() {
+		this.databox.saveRequest();
 	}
 
 

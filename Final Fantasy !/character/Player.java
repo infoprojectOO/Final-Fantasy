@@ -2,12 +2,13 @@ package character;
 
 import gui.Observer;
 
-import item.IItem;
+import item.MapItem;
 
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Map;
 import javax.swing.Icon;
 
 import control.ContactController;
+import convention.Access;
 import convention.Axis;
 import convention.Measurement;
 import convention.Orientation;
@@ -34,13 +36,14 @@ public class Player implements IMotionCharacter {
 	private Point position = new Point(0,0);
 	private boolean[] leeway = {false,false};
 	private Orientation arrow;
-	private Map<String,IItem> inventory;
+	private List<MapItem> inventory;
+	private List<Heroes> protagonists;
 	private Observer display;
 	private Map<Orientation,Icon> moves;
 	private ContactController contact;
 
 	public Player() {
-		this.inventory = new HashMap<String,IItem>();
+		this.inventory = new ArrayList<MapItem>();
 		this.moves = new HashMap<Orientation,Icon>();
 		this.moves.put(Orientation.UP,GraphImage.getIcon("CloudUp.gif", this));
 		this.look = GraphImage.getImage("Cloud_Strife_Nomura_art.jpg", this);
@@ -48,6 +51,7 @@ public class Player implements IMotionCharacter {
 		this.arrow = Orientation.UP;		
 	}
 
+	@Override
 	public void setPosition(int x, int y) {
 		this.position = new Point(x,y);
 	}
@@ -128,7 +132,28 @@ public class Player implements IMotionCharacter {
 	}
 
 	@Override
-	public void requestMove() {	
+	public boolean requestMove() {
+		return this.contact.allow(this);
+	}
+
+	@Override
+	public Access getAccessKey() {
+		return Access.AREAKEY;
+	}
+
+	@Override
+	public boolean allowsAccess(Access ackey) {
+		return false;
+	}
+
+	public void setContact(ContactController contactcontrol) {
+		this.contact = contactcontrol;
+	}
+
+	public void take(MapItem item) {
+		this.inventory.add(item);
+		this.contact.steal(item);
+		this.display.update();
 	}
 	
 }

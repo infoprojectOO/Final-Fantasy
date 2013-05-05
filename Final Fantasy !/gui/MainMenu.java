@@ -30,13 +30,13 @@ public class MainMenu extends JPanel {
 			this.buttons[i].setAlignmentX(CENTER_ALIGNMENT);
 			this.add(this.buttons[i]);
 		}
-		this.setSize(new Dimension(this.background.getWidth(null),this.background.getHeight(null)));
+		this.setSize(new Dimension(1000,1000));
 		this.setPreferredSize(this.getSize());
 	}
 	
 	@Override
 	public void paint(Graphics g) {
-		g.drawImage(this.background,0, 0, null);
+		g.drawImage(this.background,0, 0, this.getWidth(),this.getHeight(), null);
 		super.paint(g);
 	}
 	

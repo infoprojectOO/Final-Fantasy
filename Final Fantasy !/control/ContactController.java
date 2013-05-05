@@ -1,5 +1,7 @@
 package control;
 
+import item.MapItem;
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,21 +10,25 @@ import convention.Axis;
 import convention.Orientation;
 
 import gui.BoardDisplay;
+import gui.Observer;
 import character.IMotionCharacter;
 import character.Player;
+import world.Box;
 import world.EmptySlot;
 import world.IMapComponent;
 import world.PlayBoard;
 import world.World;
 
-public class ContactController {
+public class ContactController implements Observer {
 	private Player motionplayer;
 	private PlayBoard solidboard;
 	/*private BoardDisplay collisionboard;*/
-	private Point one=new Point(0,0),two=new Point(0,0); 
+/*	private Point one=new Point(0,0),two=new Point(0,0); */
 	
 	public ContactController(World world) {
 		this.motionplayer = world.getPlayer();
+		this.motionplayer.setContact(this);
+		Box.board.addObserver(this);
 	}
 	
 	public boolean noContact() {
@@ -31,8 +37,7 @@ public class ContactController {
 			way = true;
 			Orientation arrow = this.motionplayer.getArrow();
 			for (Point p : defineEdge(this.motionplayer)) {
-				if (!this.solidboard.hasWay(arrow, p)) {
-					System.out.println(p);
+				if (!this.solidboard.hasWay(arrow, p, motionplayer.getAccessKey())) {
 					return false;
 				}
 			}
@@ -44,7 +49,7 @@ public class ContactController {
 		boolean way = true;
 		Orientation arrow = mobile.getArrow();
 		for (Point p : defineEdge(mobile)) {
-			if (!this.solidboard.hasWay(arrow, p)) {
+			if (!this.solidboard.hasWay(arrow, p, mobile.getAccessKey())) {
 				return false;
 			}
 		}
@@ -100,14 +105,31 @@ public class ContactController {
 	}
 
 
-	public void changeBoard(PlayBoard boardmodel) {
+	public void setBoard(PlayBoard boardmodel) {
 		this.solidboard = boardmodel;		
 	}
 
-	public void allow(IMotionCharacter character) {
+	public boolean allow(IMotionCharacter character) {
 		if (noContact(character)) {
 			this.solidboard.shift(character);
-		}				
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void steal(MapItem item) {
+		this.solidboard.remove(item);		
+	}
+
+	public Player getPlayer() {
+		return this.motionplayer;
+	}
+
+	@Override
+	public void update() {
+		System.out.println("contact");
+		this.solidboard = Box.board.getBoard();
 	}
 
 }

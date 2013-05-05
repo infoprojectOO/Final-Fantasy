@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
+import convention.Access;
 import convention.Axis;
 
 import add_on.GraphImage;
@@ -39,6 +40,11 @@ public class Building implements IMapComponent {
 	@Override
 	public void awaken() {
 		System.out.println("I'm inactive sorry !");
+	}
+
+	@Override
+	public boolean allowsAccess(Access ackey) {
+		return false;
 	}
 
 }

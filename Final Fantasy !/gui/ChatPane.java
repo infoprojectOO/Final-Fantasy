@@ -10,7 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-import control.ChatBox;
+import chat.ChatBox;
+
 
 public class ChatPane extends JPanel implements Observer {
 	private RootLayer parent;
@@ -47,7 +48,6 @@ public class ChatPane extends JPanel implements Observer {
 		this.parent.validate();
 		this.repaint();
 		if (message.length==0) {
-			System.out.println("out");
 			this.chatbox.terminate();
 			this.visible = false;
 			this.parent.removeLayer(parent.MESSAGE);

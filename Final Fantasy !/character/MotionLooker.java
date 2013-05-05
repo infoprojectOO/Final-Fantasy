@@ -3,7 +3,8 @@ package character;
 import java.awt.Point;
 import java.util.Random;
 
-import control.ChatBox;
+import chat.ChatBox;
+
 import control.ContactController;
 import convention.*;
 
@@ -27,6 +28,7 @@ public class MotionLooker extends People implements IMotionCharacter {
 		return this.arrow;
 	}
 
+	@Override
 	public void setPosition(int x, int y) {
 		this.position = new Point(x,y);
 	}
@@ -41,16 +43,26 @@ public class MotionLooker extends People implements IMotionCharacter {
 	}
 
 	@Override
-	public void requestMove() {
-		int i = random.nextInt(4);
-		Orientation[] arrs = {Orientation.UP,Orientation.DOWN,Orientation.LEFT,Orientation.RIGHT};
-		this.setArrow(arrs[i]);
-		this.contact.allow(this);		
+	public boolean requestMove() {
+		if (!talking) {
+			int i = random.nextInt(4);
+			Orientation[] arrs = {Orientation.UP,Orientation.DOWN,Orientation.LEFT,Orientation.RIGHT};
+			this.setArrow(arrs[i]);
+			this.contact.allow(this);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
 	public void move(int dx, int dy) {
 		this.position.translate(dx,dy);
+	}
+
+	@Override
+	public Access getAccessKey() {
+		return null;
 	}
 
 }

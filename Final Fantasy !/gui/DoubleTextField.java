@@ -12,7 +12,7 @@ public class DoubleTextField extends JFormattedTextField {
 		this.actionid = name;		
 	}
 
-	public String getActionId() {
+	public String getActionID() {
 		return actionid;
 	}
 

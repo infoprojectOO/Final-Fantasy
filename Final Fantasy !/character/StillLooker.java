@@ -2,7 +2,8 @@ package character;
 
 import java.awt.Image;
 
-import control.ChatBox;
+import chat.ChatBox;
+
 import convention.Measurement;
 
 public class StillLooker extends People {

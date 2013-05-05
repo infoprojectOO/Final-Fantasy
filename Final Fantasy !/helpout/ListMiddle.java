@@ -23,6 +23,8 @@ public class ListMiddle {
 			list.remove(list.size()-1);
 			System.out.println("hllo");
 		} System.out.println(list);
+		System.out.println(list.toArray(new Integer[list.size()]));
+		
 
 	}
 

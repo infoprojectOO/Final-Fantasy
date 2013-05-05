@@ -1,6 +1,6 @@
 package control;
 
-import area.IArea;
+import area.Area;
 import convention.Axis;
 import convention.Orientation;
 import gui.BoardDisplay;
@@ -10,6 +10,7 @@ import scenario.History;
 
 import character.Player;
 
+import world.Box;
 import world.IMapComponent;
 import world.PlayBoard;
 import world.World;
@@ -28,21 +29,19 @@ public class ActionController implements Observer {
 		this.playground = this.world.getBoard();
 		this.motioncharacter = world.getPlayer();
 		this.contact = world.getContact();
+		Box.board.addObserver(this);
 	}
 
 	@Override
 	public void update() {
+		System.out.println("action");
+		this.playground = Box.board.getBoard();
 		this.dispcontrol.refresh();		
-	}
-
-	public PlayBoard getBoard() {
-		return this.playground;
 	}
 
 	public void shift(int dx, int dy, Orientation id) {
 		this.motioncharacter.setArrow(id);
-		if (this.contact.noContact(this.motioncharacter)) {
-			this.motioncharacter.move(dx, dy);
+		if (this.motioncharacter.requestMove()) {
 			this.managePlayer();
 		}
 	}
@@ -63,17 +62,17 @@ public class ActionController implements Observer {
 			this.motioncharacter.setLeeway(Axis.Y, true);
 			System.out.println("y leeway");
 		}*/
-		if (this.playground.isRoot(x, y)) {
+		if (this.playground.inside(x, y)) {
 			IMapComponent object = this.playground.get(x, y);
-			if (object instanceof IArea) {
-				((IArea) object).lead(this.dispcontrol);				
+			if (object instanceof Area) {
+				((Area) object).stomped();			
 			}
 		}
 	}
 
 	public void addDisplay(BoardDisplay board) {
-		this.boarddisplay = board;
-		this.contact.addDisplay(board);
+//		this.boarddisplay = board;
+//		this.contact.addDisplay(board);
 	}
 
 	public void undertake(boolean accept) {
@@ -87,10 +86,10 @@ public class ActionController implements Observer {
 		this.dispcontrol.displaymenu(skipsave);
 	}
 
-	public void changeBoard(PlayBoard boardmodel) {
-		this.playground = boardmodel;
-		this.contact.changeBoard(boardmodel);
-	}
+//	public void changeBoard(PlayBoard boardmodel) {
+//		this.playground = boardmodel;
+//		this.contact.setBoard(boardmodel);
+//	}
 	
 	
 	

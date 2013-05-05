@@ -13,7 +13,7 @@ import javax.swing.*;
 import convention.Axis;
 
 import area.BattleField;
-import area.IArea;
+import area.Area;
 import area.Portal;
 
 
@@ -22,8 +22,10 @@ import settings.ActionsMap;
 import settings.KeyMap;
 
 import character.Player;
+import chat.ChatBox;
 
 import world.*;
+import world.Box;
 
 public class DisplayController implements Observer {
 	private int width,height;
@@ -51,19 +53,20 @@ public class DisplayController implements Observer {
 		this.actmap = new ActionsMap(this.playcontrol);
 		BoardDisplay.width = width;
 		BoardDisplay.height = height;
-		ChatBox cb = this.worldmodel.getChatBox();
-		this.chatpane = new ChatPane(layer, cb, new ChatListener(cb));
+		this.chatpane = new ChatPane(layer, Box.chat, new ChatListener(Box.chat));
 		this.player = this.worldmodel.getPlayer();
 		this.boardmodel = this.worldmodel.getBoard();
 		this.motioncontrol = new MotionController(this.boardmodel);
-		this.board = new BoardDisplay(boardmodel,player);
+		Box.board.upload(boardmodel);
+		new SaveMenu(layer,true, Box.data);
+		this.board = new BoardDisplay(Box.board,player);
 		set(this.board);
-		this.boardmodel.addObserver(board);
+		this.motioncontrol.addObserver(board);
 		this.player.addObserver(board);
 	}
 
 	private void set(BoardDisplay board) {
-		this.layer.replaceLayer(board);
+		this.layer.replaceLayer(board, layer.MAP);
 		board.setFocusable(true);
 		board.requestFocusInWindow();
 		board.setInputMap(JComponent.WHEN_FOCUSED, new KeyMap());
@@ -77,21 +80,24 @@ public class DisplayController implements Observer {
 		
 	}
 
-	public void teleport(PlayBoard destination, Point landing) {
-		this.boardmodel = destination;
-		this.playcontrol.changeBoard(boardmodel);
-		this.board = new BoardDisplay(boardmodel, this.player);
-		this.player.setPosition(landing.x*board.getScale(Axis.X),landing.y*board.getScale(Axis.Y));
-		this.player.addObserver(board);
-		set(board);		
-	}
+//	public void teleport(PlayBoard destination, Point landing) {
+//		this.boardmodel.remove(player);
+//		this.boardmodel = destination;
+//		this.boardmodel.put(this.player, landing.x, landing.y);
+//		this.playcontrol.changeBoard(boardmodel);
+//		this.motioncontrol.setBoard(boardmodel);
+//		this.board = new BoardDisplay(Box.board, this.player);
+//		this.player.setPosition(landing.x/**board.getScale(Axis.X)*/,landing.y/**board.getScale(Axis.Y)*/);
+//		this.player.addObserver(board);
+//		set(board);		
+//	}
 
 	public void fight(BattleField battleField) {
 		// do nothing		
 	}
 
 	public void displaymenu(boolean skipsave) {
-		this.menucontrol.display(skipsave);
+		this.menucontrol.display();
 	}
 
 	public void refresh() {

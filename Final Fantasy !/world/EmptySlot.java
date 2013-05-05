@@ -3,6 +3,7 @@ package world;
 import java.awt.Dimension;
 import java.awt.Image;
 
+import convention.Access;
 import convention.Axis;
 
 public class EmptySlot implements IMapComponent {
@@ -27,6 +28,11 @@ public class EmptySlot implements IMapComponent {
 	@Override
 	public void awaken() {
 		System.out.println("I'm inactive sorry !");
+	}
+
+	@Override
+	public boolean allowsAccess(Access ackey) {
+		return true;
 	}
 
 }

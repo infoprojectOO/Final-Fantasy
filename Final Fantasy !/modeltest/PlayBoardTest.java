@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import convention.Access;
 import convention.Axis;
 import convention.Orientation;
 
@@ -49,7 +50,7 @@ public class PlayBoardTest {
 	}
 	@Test
 	public void putTest() {
-		play.put(new Portal(), 60, 80);
+		play.put(new Portal(null), 60, 80);
 		assertTrue(play.isRoot(60, 80));
 		assertFalse(play.isRoot(60, 81));
 	}
@@ -82,16 +83,16 @@ public class PlayBoardTest {
 	public void hasWayTest() {
 		Point p = new Point(0,0);
 		Point pbuild = new Point(9,6);
-		assertFalse(play.hasWay(Orientation.DOWN,p));
-		assertFalse(play.hasWay(Orientation.LEFT,p));
-		assertTrue(play.hasWay(Orientation.RIGHT,p));
-		assertTrue(play.hasWay(Orientation.UP,p));
+		assertFalse(play.hasWay(Orientation.DOWN,p,Access.AREAKEY));
+		assertFalse(play.hasWay(Orientation.LEFT,p,Access.AREAKEY));
+		assertTrue(play.hasWay(Orientation.RIGHT,p,Access.AREAKEY));
+		assertTrue(play.hasWay(Orientation.UP,p,Access.AREAKEY));
 		play.put(new Building(), 10, 0);
-		assertFalse(play.hasWay(Orientation.RIGHT,pbuild));
-		assertTrue(play.hasWay(Orientation.UP,pbuild));
-		play.put(new BattleField(), 50, 0);
-		assertTrue(play.hasWay(Orientation.RIGHT,p));
+		assertFalse(play.hasWay(Orientation.RIGHT,pbuild,Access.AREAKEY));
+		assertTrue(play.hasWay(Orientation.UP,pbuild,Access.AREAKEY));
+		play.put(new BattleField(null), 50, 0);
+		assertTrue(play.hasWay(Orientation.RIGHT,p,Access.AREAKEY));
 		play.put(new Building(), 0, 7);
-		assertFalse(play.hasWay(Orientation.UP,pbuild));
+		assertFalse(play.hasWay(Orientation.UP,pbuild,Access.AREAKEY));
 	}
 }

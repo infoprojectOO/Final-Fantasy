@@ -14,6 +14,7 @@ import convention.Axis;
 
 import character.Player;
 
+import world.BoardBox;
 import world.IMapComponent;
 import world.PlayBoard;
 
@@ -25,18 +26,25 @@ public class BoardDisplay extends JPanel implements Observer {
 	private JLabel space;
 	private PlayBoard gameboard;
 	private Observer controller;
+	private BoardBox boardbox;
 
-	public BoardDisplay(PlayBoard board, Player player) {
+	public BoardDisplay(BoardBox bb, Player player) {
 		super();
 		this.setSize(new Dimension(width, height));
 		this.player = player;
-		this.gameboard = board;
-		this.space = new JLabel(player.getMove());
-		this.add(space);
+		this.boardbox = bb;
+		setBoard();
+//		this.space = new JLabel(player.getMove());
+//		this.add(space);
+		
+	}
+	
+	private void setBoard() {
+		this.gameboard = boardbox.getBoard();
 		this.ScaleX = BoardDisplay.width/this.gameboard.getWidth();
 		this.ScaleY = BoardDisplay.height/this.gameboard.getHeigth();
 	}
-	
+
 	public int getScale(Axis axis) {
 		if (axis == Axis.X) {
 			return this.ScaleX;
@@ -78,7 +86,11 @@ public class BoardDisplay extends JPanel implements Observer {
 
 	@Override
 	public void update() {
-		this.controller.update();
+		if (this.boardbox.isWarping()) {
+			System.out.println("display");
+			setBoard();
+			this.boardbox.setWarping(false);
+		}
 		repaint();
 	}
 
